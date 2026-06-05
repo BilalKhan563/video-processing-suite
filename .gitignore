@@ -1,0 +1,221 @@
+# ============================================
+# Python
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+dist/
+build/
+eggs/
+.eggs/
+develop-eggs/
+downloads/
+parts/
+sdist/
+var/
+wheels/
+*.whl
+*.manifest
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# ============================================
+# Environment & Secrets
+# ============================================
+.env
+.env.local
+.env.production
+.env.*.local
+*.key
+*.pem
+*.crt
+secrets/
+credentials/
+
+# ============================================
+# IDE & Editor
+# ============================================
+# PyCharm
+.idea/
+*.iml
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# VSCode
+.vscode/
+*.code-workspace
+.settings/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+.*.swp
+
+# ============================================
+# Video & Audio Files (Large files)
+# ============================================
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+*.flv
+*.wmv
+*.m4v
+*.mpg
+*.mpeg
+
+*.mp3
+*.wav
+*.m4a
+*.flac
+*.ogg
+*.aac
+
+# Temporary video processing
+temp/
+tmp/
+temp_*/
+tmp_*/
+/temp/
+/tmp/
+*.temp
+*.tmp
+video_work_*/
+mock_videos/
+padded_*.mp4
+
+# ============================================
+# Logs
+# ============================================
+logs/
+*.log
+log/
+*.log.*
+*.log.[0-9]*
+
+# ============================================
+# Cache & Model Files
+# ============================================
+.cache/
+.cache/
+*.cache
+*.pkl
+*.pickle
+
+# Whisper models
+whisper_models/
+.whisper/
+/root/.cache/whisper/
+
+# PyTorch
+.pytorch/
+torch_cache/
+*.pth
+*.pt
+*.bin
+
+# HuggingFace
+.huggingface/
+.cache/huggingface/
+
+# ============================================
+# Docker
+# ============================================
+.docker/
+docker-compose.override.yml
+*.pid
+Dockerfile.*.tmp
+
+# ============================================
+# Testing & Coverage
+# ============================================
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
+
+# ============================================
+# Cloudinary & Uploads
+# ============================================
+cloudinary_uploads/
+uploaded_videos/
+generated_videos/
+*.upload
+
+# ============================================
+# OS Specific
+# ============================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# ============================================
+# Project Specific
+# ============================================
+# Celery
+celerybeat-schedule
+celerybeat.pid
+celerybeat-schedule.db
+
+# Redis
+dump.rdb
+*.rdb
+
+# Subtitle temp files
+*.ass
+*.srt
+sub_*.ass
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb
+
+# Profile data
+.prof
+*.prof
+
+# ============================================
+# Sensitive Data
+# ============================================
+*.key
+*.pem
+*.crt
+*.csr
+secrets.json
+config.local.json

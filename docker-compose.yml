@@ -1,0 +1,112 @@
+version: '3.8'
+
+services:
+  # Main API Service
+  api:
+    build: .
+    container_name: video-processing-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - PORT=8000
+      - HOST=0.0.0.0
+      - WHISPER_MODEL_SIZE=${WHISPER_MODEL_SIZE:-tiny}
+      - FFMPEG_THREADS=${FFMPEG_THREADS:-4}
+      - FFMPEG_PRESET=${FFMPEG_PRESET:-ultrafast}
+      - TEMP_DIR=/tmp/video_processing
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      - ./logs:/app/logs
+      - video-temp:/tmp/video_processing
+      - whisper-cache:/root/.cache/whisper
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - video-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+
+  # Optional: Redis for Celery (if using background tasks)
+  redis:
+    image: redis:7-alpine
+    container_name: video-processing-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - video-network
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+
+  # Optional: Celery Worker (for async tasks)
+  worker:
+    build: .
+    container_name: video-processing-worker
+    restart: unless-stopped
+    environment:
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - WHISPER_MODEL_SIZE=${WHISPER_MODEL_SIZE:-tiny}
+      - REDIS_URL=redis://redis:6379/0
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      - ./logs:/app/logs
+      - video-temp:/tmp/video_processing
+      - whisper-cache:/root/.cache/whisper
+    networks:
+      - video-network
+    depends_on:
+      - redis
+    command: celery -A app.worker.celery worker --loglevel=info --concurrency=2
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
+        reservations:
+          cpus: '1'
+          memory: 2G
+
+  # Optional: Flower (Celery monitoring)
+  flower:
+    image: mher/flower:2.0
+    container_name: video-processing-flower
+    restart: unless-stopped
+    ports:
+      - "5555:5555"
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - FLOWER_PORT=5555
+    networks:
+      - video-network
+    depends_on:
+      - redis
+      - worker
+
+volumes:
+  video-temp:
+    driver: local
+  whisper-cache:
+    driver: local
+  redis-data:
+    driver: local
+
+networks:
+  video-network:
+    driver: bridge
